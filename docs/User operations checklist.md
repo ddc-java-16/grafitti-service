@@ -10,22 +10,22 @@ Note that the pairs of square brackets below are rendered as checkboxes in GitHu
 
 ### Create/insert
     
-* [ ] Single instance 
+* [x] Single instance 
 * [ ] Multiple instances 
     
 ### Read/query/select
 
-* [ ] Single instance 
+* [x ] Single instance 
 * [ ] Multiple instances 
 
 ### Update
 
-* [ ] Single instance 
+* [ x] Single instance 
 * [ ] Multiple instances 
 
 ### Delete
 
-* [ ] Single instance 
+* [ x] Single instance 
 * [ ] Multiple instances 
 
 
@@ -52,4 +52,34 @@ Filter
 Sort order
 
 : {Replace this placeholder---including the braces, but not including the colon character and the space that follows it---with the list of fields of the entity that will be used to sort the query, along with an indicator of ascending or descending order. For example, if the entity is `Task` in a to-do list application, and `Task` has a `dueDate` field, you might want to say "dueDate, ascending".}
+
+## Queries
+
+For any queries (i.e. selecting from the database) that you think you will need to do with this entity, summarize the purpose of the query (what functionality in your application will use the query), whether the query is intended to return a single instance or multiple instances (and whether returning no instances is a valid possibility), what field/column of your entity will be used as filter criteria, and in what order the results (if multiple) should be returned.
+
+Copy and paste the section below as many times as necessary, for all of the queries you currently anticipate implementing for this entity.
+
+### Query: {_Replace this placeholder---including the braces---with a simple label for the query---e.g. "All favorites"._}
+
+Purpose
+
+Return all tags related to this canvas from a specific user.
+
+Cardinality/modality
+
+many/optional
+
+Filter
+
+user_id
+
+
+Sort order
+
+created
+
+
+
+
+
 
