@@ -5,8 +5,8 @@ menu: Data Model
 order: 20
 ddl: sql/ddl.sql
 erd:
-  image: img/SwarmatronERD.svg
-  pdf: pdf/SwarmatronERD.pdf
+  image: img/grafitti.svg
+  pdf: pdf/graffiti-erd.pdf
 ---
 
 {% include ddc-abbreviations.md %}
