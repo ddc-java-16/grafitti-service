@@ -1,6 +1,6 @@
 # Entity Operations Checklist
 
-## Entity name: {_Replace this placeholder (including the braces) with the entity class name._}
+## Entity name: Tag
 
 ## Operations
 
@@ -16,7 +16,7 @@ Note that the pairs of square brackets below are rendered as checkboxes in GitHu
 ### Read/query/select
 
 * [ ] Single instance 
-* [ x] Multiple instances 
+* [x] Multiple instances 
 
 ### Update
 
@@ -26,7 +26,7 @@ Note that the pairs of square brackets below are rendered as checkboxes in GitHu
 ### Delete
 
 * [ ] Single instance 
-* [] Multiple instances 
+* [ ] Multiple instances 
 
 
 ## Queries
