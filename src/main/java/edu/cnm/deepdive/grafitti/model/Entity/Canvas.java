@@ -1,4 +1,4 @@
-package edu.cnm.deepdive.grafitti.Entity;
+package edu.cnm.deepdive.grafitti.model.Entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
