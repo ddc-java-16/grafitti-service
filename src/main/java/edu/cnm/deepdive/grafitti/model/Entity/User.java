@@ -67,11 +67,6 @@ public class User{
   @JsonIgnore
   private String oauthKey;
 
-  @NonNull
-  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-  @OrderBy( "name ASC")
-  @JsonIgnore
-  private final List<Passphrase> passphrases = new LinkedList<>();
 
   @NonNull
   public Long getId() {
@@ -98,10 +93,6 @@ public class User{
 
 
 
-  @NonNull
-  public List<Passphrase> getPassphrases() {
-    return passphrases;
-  }
 
   public String getDisplayName() {
     return displayName;
