@@ -1,6 +1,6 @@
 package edu.cnm.deepdive.grafitti.service;
 
-import edu.cnm.deepdive.grafitti.model.Entity.User;
+import edu.cnm.deepdive.grafitti.model.entity.User;
 import java.util.Collection;
 import java.util.Collections;
 import org.springframework.core.convert.converter.Converter;
