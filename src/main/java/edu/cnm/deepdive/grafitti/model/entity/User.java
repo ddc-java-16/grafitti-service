@@ -1,4 +1,4 @@
-package edu.cnm.deepdive.grafitti.model.Entity;
+package edu.cnm.deepdive.grafitti.model.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,8 +19,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.Instant;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

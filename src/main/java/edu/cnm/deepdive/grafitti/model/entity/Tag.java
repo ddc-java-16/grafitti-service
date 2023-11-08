@@ -1,4 +1,4 @@
-package edu.cnm.deepdive.grafitti.model.Entity;
+package edu.cnm.deepdive.grafitti.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

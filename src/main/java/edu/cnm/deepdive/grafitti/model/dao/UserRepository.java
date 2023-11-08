@@ -1,9 +1,10 @@
-package edu.cnm.deepdive.grafitti.service;
+package edu.cnm.deepdive.grafitti.model.dao;
 
-import edu.cnm.deepdive.grafitti.model.entity.User;
+import edu.cnm.deepdive.grafitti.entity.User;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
