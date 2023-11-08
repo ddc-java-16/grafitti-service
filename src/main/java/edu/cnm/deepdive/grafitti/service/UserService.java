@@ -1,7 +1,7 @@
 package edu.cnm.deepdive.grafitti.service;
 
 import edu.cnm.deepdive.grafitti.model.Entity.User;
-import edu.cnm.deepdive.passphrase.model.dao.UserRepository;
+
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.security.core.context.SecurityContextHolder;

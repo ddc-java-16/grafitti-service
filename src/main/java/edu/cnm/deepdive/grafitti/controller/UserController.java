@@ -2,7 +2,6 @@ package edu.cnm.deepdive.grafitti.controller;
 
 import edu.cnm.deepdive.grafitti.service.AbstractUserService;
 import edu.cnm.deepdive.grafitti.model.Entity.User;
-import edu.cnm.deepdive.passphrase.service.AbstractUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
