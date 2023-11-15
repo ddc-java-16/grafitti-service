@@ -1,8 +1,8 @@
 package edu.cnm.deepdive.grafitti.service;
 
-import edu.cnm.deepdive.passphrase.configuration.FileStorageConfiguration;
-import edu.cnm.deepdive.passphrase.configuration.FileStorageConfiguration.FileNameProperties;
-import edu.cnm.deepdive.passphrase.configuration.FileStorageConfiguration.FileNameProperties.TimestampProperties;
+import edu.cnm.deepdive.grafitti.configuration.FileStorageConfiguration;
+import edu.cnm.deepdive.grafitti.configuration.FileStorageConfiguration.FilenameProperties;
+import edu.cnm.deepdive.grafitti.configuration.FileStorageConfiguration.FilenameProperties.TimestampProperties;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.FileSystems;
@@ -47,7 +47,7 @@ public class LocalFileSystemStorageService implements
   public LocalFileSystemStorageService(FileStorageConfiguration configuration, ApplicationHome home,
       RandomGenerator rng) {
     this.rng = rng;
-    FileNameProperties fileNameProperties = configuration.getFilename();
+    FilenameProperties fileNameProperties = configuration.getFilename();
     TimestampProperties timestampProperties = fileNameProperties.getTimestamp();
     String uploadPath = configuration.getDirectory();
     uploadDirectory = configuration.isApplicationHome()
