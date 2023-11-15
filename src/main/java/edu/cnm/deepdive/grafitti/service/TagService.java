@@ -19,14 +19,13 @@ public class TagService implements AbstractTagService{
   }
 
   @Override
-  public Tag create(Canvas canvas, MultipartFile bitmap) {
+  public Tag create(UUID canvas_key, MultipartFile bitmap) {
     return  repository
-        .findById(canvas.getKey())
+        .findById(canvas_key)
         .map((c) -> {
           // Store bitmap using StorageService, and get the storageKey returned it
           Tag tag = new Tag();
           tag.setCreated(Instant.now());
-          tag.setCanvas(canvas);
           //tag.setBitmap(bitmap); // FIXME: 11/15/23
           return repository.save(tag);
         })

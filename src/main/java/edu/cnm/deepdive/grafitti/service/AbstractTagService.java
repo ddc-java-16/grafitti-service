@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface AbstractTagService {
 
-  Tag create(Canvas canvas, MultipartFile bitmap);
+  Tag create(UUID canvas_key, MultipartFile bitmap);
 
   Optional<Tag> get (UUID canvas_key);
 
