@@ -1,8 +1,8 @@
 package edu.cnm.deepdive.grafitti.controller;
 
-import edu.cnm.deepdive.passphrase.model.entity.Attachment;
-import edu.cnm.deepdive.passphrase.service.AbstractAttachmentService;
-import edu.cnm.deepdive.passphrase.service.AbstractUserService;
+import edu.cnm.deepdive.grafitti.model.entity.Attachment;
+import edu.cnm.deepdive.grafitti.service.AbstractAttachmentService;
+import edu.cnm.deepdive.grafitti.service.AbstractUserService;
 import java.io.IOException;
 import java.net.URI;
 import java.util.UUID;

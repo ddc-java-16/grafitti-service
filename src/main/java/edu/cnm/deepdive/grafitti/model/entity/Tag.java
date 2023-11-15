@@ -7,14 +7,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.Instant;
+import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "tags")
@@ -26,13 +31,25 @@ public class Tag {
   @GeneratedValue
   @Column(name = "tag_id", nullable = false, updatable = false)
   @JsonIgnore
-  private int id;
+  private long id;
+
+  @NonNull
+  @Column(name = "external_key", updatable = false, nullable = false, unique = true, columnDefinition = "UUID")
+  @JsonProperty(namespace = "id", access = Access.READ_ONLY)
+  private UUID key;
 
 
   @NonNull
-  @Column(name = "canvas_id", nullable = false, updatable = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "canvas_id", nullable = false, updatable = false)
   @JsonIgnore
-  private int canvasId;
+  private Canvas canvas;
+
+  @NonNull
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false, updatable = false)
+  @JsonIgnore
+  private User user;
 
   @NonNull
   @CreationTimestamp
@@ -42,19 +59,30 @@ public class Tag {
   private Instant created;
 
   @NonNull
-  @Column(name = "bitmap")
-  private String bitmap;
+  @Column(updatable = false, nullable = false)
+  private String storageKey;
 
-  public int getId() {
+  public long getId() {
     return id;
   }
 
-  public int getCanvasId() {
-    return canvasId;
+
+  @NonNull
+  public Canvas getCanvas() {
+    return canvas;
   }
 
-  public void setCanvasId(int canvasId) {
-    this.canvasId = canvasId;
+  public void setCanvas(@NonNull Canvas canvas) {
+    this.canvas = canvas;
+  }
+
+  @NonNull
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(@NonNull User user) {
+    this.user = user;
   }
 
   @NonNull
@@ -67,11 +95,11 @@ public class Tag {
   }
 
   @NonNull
-  public String getBitmap() {
-    return bitmap;
+  public String getStorageKey() {
+    return storageKey;
   }
 
-  public void setBitmap(@NonNull String bitmap) {
-    this.bitmap = bitmap;
+  public void setStorageKey(@NonNull String storageKey) {
+    this.storageKey = storageKey;
   }
 }

@@ -5,11 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.Instant;
+import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
 
@@ -20,11 +24,16 @@ public class Canvas {
   @Column(name = "canvas_id", updatable = false)
   private int id;
 
+  @NonNull
+  @Column(name = "external_key", updatable = false, nullable = false, unique = true, columnDefinition = "UUID")
+  @JsonProperty(namespace = "id", access = Access.READ_ONLY)
+  private UUID key;
 
   @NonNull
-  @Column(name = "user_id", nullable = false, updatable = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false, updatable = false)
   @JsonIgnore
-  private int user_id;
+  private User user;
 
   @NonNull
   @CreationTimestamp
@@ -56,12 +65,17 @@ public class Canvas {
   }
 
   @NonNull
+  public UUID getKey() {
+    return key;
+  }
+
+  @NonNull
   public String getBitmap() {
     return bitmap;
   }
 
-  public void setUser_id(int user_id) {
-    this.user_id = user_id;
+  public void setUser(@NonNull User user) {
+    this.user = user;
   }
 
   public void setCreated(@NonNull Instant created) {
