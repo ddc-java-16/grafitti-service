@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.grafitti.service;
 
+import edu.cnm.deepdive.grafitti.model.dao.UserRepository;
 import edu.cnm.deepdive.grafitti.model.entity.User;
 
 import java.util.Optional;

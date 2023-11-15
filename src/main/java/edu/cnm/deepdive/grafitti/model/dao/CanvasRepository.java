@@ -15,7 +15,5 @@ public interface CanvasRepository extends JpaRepository<Canvas, UUID> {
 
   List<Canvas> findAllByUser(User user);
 
-  void delete(UUID canvasKey);
-
   Optional<Canvas> findByUserAndKey(User user, UUID canvasKey);
 }

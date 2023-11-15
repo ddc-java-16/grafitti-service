@@ -27,7 +27,7 @@ public class Canvas {
   @Id
   @GeneratedValue
   @Column(name = "canvas_id", updatable = false)
-  private int id;
+  private long id;
 
   @NonNull
   @Column(name = "external_key", updatable = false, nullable = false, unique = true, columnDefinition = "UUID")
@@ -56,7 +56,7 @@ public class Canvas {
   @JsonProperty(access = Access.READ_ONLY)
   private final List<Tag> tags = new LinkedList<>();
 
-  public int getId() {
+  public long getId() {
     return id;
   }
 
