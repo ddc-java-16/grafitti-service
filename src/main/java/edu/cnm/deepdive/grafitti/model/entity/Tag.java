@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -19,7 +20,6 @@ import java.time.Instant;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
-import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "tags")
@@ -101,5 +101,10 @@ public class Tag {
 
   public void setStorageKey(@NonNull String storageKey) {
     this.storageKey = storageKey;
+  }
+
+  @PrePersist
+  private void generateKey(){
+    key = UUID.randomUUID();
   }
 }
