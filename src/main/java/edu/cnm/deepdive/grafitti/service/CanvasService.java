@@ -2,6 +2,7 @@ package edu.cnm.deepdive.grafitti.service;
 
 import edu.cnm.deepdive.grafitti.model.dao.CanvasRepository;
 import edu.cnm.deepdive.grafitti.model.entity.Canvas;
+import edu.cnm.deepdive.grafitti.model.entity.User;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,14 +19,10 @@ public class CanvasService implements AbstractCanvasService{
   }
 
   @Override
-  public Optional<Canvas> create(UUID user_key, String canvasName) {
-    return repository
-        .findById(user_key)
-        .map((c) -> {
-          Canvas canvas = new Canvas();
-          canvas.setName(canvasName);
+  public Canvas create(User user, Canvas canvas) {
+    canvas.setUser(user);
           return  repository.save(canvas);
-        });
+
 
   }
 
@@ -36,12 +33,13 @@ public class CanvasService implements AbstractCanvasService{
   }
 
   @Override
-  public void delete(UUID canvas_key) {
-    repository.delete(canvas_key);
+  public void delete(User user, UUID canvasKey) {
+    repository.findByUserAndKey(user, canvasKey)
+        .ifPresent(repository::delete);
   }
 
   @Override
-  public List<Canvas> getAll(UUID user_key){
-    return repository.findAllByKey(user_key);
+  public List<Canvas> getAll(User user){
+    return repository.findAllByUser(user);
   }
 }
