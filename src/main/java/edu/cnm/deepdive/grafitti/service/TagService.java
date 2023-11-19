@@ -1,10 +1,11 @@
 package edu.cnm.deepdive.grafitti.service;
 
+
 import edu.cnm.deepdive.grafitti.configuration.FileStorageConfiguration;
 import edu.cnm.deepdive.grafitti.configuration.FileStorageConfiguration.FilenameProperties;
 import edu.cnm.deepdive.grafitti.configuration.FileStorageConfiguration.FilenameProperties.TimestampProperties;
+import edu.cnm.deepdive.grafitti.model.dao.CanvasRepository;
 import edu.cnm.deepdive.grafitti.model.dao.TagRepository;
-import edu.cnm.deepdive.grafitti.model.entity.Canvas;
 import edu.cnm.deepdive.grafitti.model.entity.Tag;
 import edu.cnm.deepdive.grafitti.model.entity.User;
 import edu.cnm.deepdive.grafitti.service.StorageService.MediaTypeException;
@@ -17,7 +18,9 @@ import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
@@ -40,7 +43,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Profile("service")
 public class TagService implements AbstractTagService{
 
-  private static final String KEY_PATH_DELIMITER = FileSystems.getDefault().getSeparator();
+
+   private static final String KEY_PATH_DELIMITER = FileSystems.getDefault().getSeparator();
   private static final String INVALID_MEDIA_FORMAT = "%s is not allowed in this storage service.";
 
   private final TagRepository repository;
@@ -72,33 +76,36 @@ public class TagService implements AbstractTagService{
     randomizerLimit = fileNameProperties.getRandomizerLimit();
     formatter = new SimpleDateFormat(timestampProperties.getFormat());
     formatter.setTimeZone(TimeZone.getTimeZone(timestampProperties.getTimeZone()));
-  }
 
   @Override
-  public Tag create(UUID canvas_key, MultipartFile bitmap) {
-    return  repository
-        .findById(canvas_key)
+  public Tag create(User user, UUID canvasKey, MultipartFile bitmap) {
+    return  tagRepository
+        .findById(canvasKey)
         .map((c) -> {
           // Store bitmap using StorageService, and get the storageKey returned it
           Tag tag = new Tag();
           tag.setCreated(Instant.now());
           //tag.setBitmap(bitmap); // FIXME: 11/15/23
-          return repository.save(tag);
+          return tagRepository.save(tag);
         })
         .orElseThrow();
   }
 
 
   @Override
-  public Optional<Tag> get(UUID canvas_key) {
-    return repository
-        .findByCanvas(canvas_key);
-  }
+  public List<Tag> get(UUID canvasKey) {
+    return canvasRepository
+        .findByKey(canvasKey)
+        .map(tagRepository::findByCanvas)
+        .orElseThrow();
+    }
 
   @Override
-  public Optional<Tag> get(UUID user_id, UUID canvas_key) {
-    return repository
-        .findByUserAndCanvas(user_id, canvas_key);
+  public List<Tag> getByUserAndCanvas(User user, UUID canvasKey) {
+    return canvasRepository
+        .findByKey(canvasKey)
+        .map((canvas) -> tagRepository.findByUserAndCanvas(user, canvas))
+        .orElseThrow();
   }
 
   @Override
