@@ -60,7 +60,25 @@ public class Tag {
 
   @NonNull
   @Column(updatable = false, nullable = false)
+  @JsonIgnore
   private String storageKey;
+
+
+  @NonNull
+  @Column(nullable = false, updatable = false)
+  @JsonProperty(access = Access.READ_ONLY)
+  private String filename;
+
+  @NonNull
+  @Column(nullable = false, updatable = false)
+  @JsonProperty(access = Access.READ_ONLY)
+  private String contentType;
+  @NonNull
+  @Column(nullable = false, updatable = false)
+  @JsonProperty(access = Access.READ_ONLY)
+  private long size;
+
+
 
   public long getId() {
     return id;
@@ -102,9 +120,35 @@ public class Tag {
   public void setStorageKey(@NonNull String storageKey) {
     this.storageKey = storageKey;
   }
+  
+   @NonNull
+  public String getFilename() {
+    return filename;
+  }
 
-  @PrePersist
+  public void setFilename(@NonNull String filename) {
+    this.filename = filename;
+  }
+
+  @NonNull
+  public String getContentType() {
+    return contentType;
+  }
+
+  public void setContentType(@NonNull String contentType) {
+    this.contentType = contentType;
+  }
+
+  public long getSize() {
+    return size;
+  }
+
+  public void setSize(long size) {
+    this.size = size;
+    @PrePersist
   private void generateKey(){
     key = UUID.randomUUID();
   }
+
+  
 }

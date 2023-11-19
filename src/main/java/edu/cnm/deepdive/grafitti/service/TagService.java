@@ -1,25 +1,81 @@
 package edu.cnm.deepdive.grafitti.service;
 
+
+import edu.cnm.deepdive.grafitti.configuration.FileStorageConfiguration;
+import edu.cnm.deepdive.grafitti.configuration.FileStorageConfiguration.FilenameProperties;
+import edu.cnm.deepdive.grafitti.configuration.FileStorageConfiguration.FilenameProperties.TimestampProperties;
 import edu.cnm.deepdive.grafitti.model.dao.CanvasRepository;
 import edu.cnm.deepdive.grafitti.model.dao.TagRepository;
 import edu.cnm.deepdive.grafitti.model.entity.Tag;
 import edu.cnm.deepdive.grafitti.model.entity.User;
+import edu.cnm.deepdive.grafitti.service.StorageService.MediaTypeException;
+import edu.cnm.deepdive.grafitti.service.StorageService.StorageException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
+import java.util.random.RandomGenerator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.system.ApplicationHome;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Profile("service")
 public class TagService implements AbstractTagService{
 
-  private final TagRepository tagRepository;
-  private final CanvasRepository canvasRepository;
-  public TagService(TagRepository tagRepository, CanvasRepository canvasRepository) {
-    this.tagRepository = tagRepository;
-    this.canvasRepository = canvasRepository;
-  }
+
+   private static final String KEY_PATH_DELIMITER = FileSystems.getDefault().getSeparator();
+  private static final String INVALID_MEDIA_FORMAT = "%s is not allowed in this storage service.";
+
+  private final TagRepository repository;
+  private final RandomGenerator rng;
+  private final Path uploadDirectory;
+  private final Pattern subdirectoryPattern;
+  private final Set<String> whitelist;
+  private final String filenameFormat;
+  private final DateFormat formatter;
+  private final int randomizerLimit;
+
+  @Autowired
+  public TagService(TagRepository repository, FileStorageConfiguration configuration, ApplicationHome home,
+      RandomGenerator rng) {
+
+    this.repository = repository;
+    this.rng = rng;
+
+    FilenameProperties fileNameProperties = configuration.getFilename();
+    TimestampProperties timestampProperties = fileNameProperties.getTimestamp();
+    String uploadPath = configuration.getDirectory();
+    uploadDirectory = configuration.isApplicationHome()
+        ? home.getDir().toPath().resolve(uploadPath)
+        : Path.of(uploadPath);
+    uploadDirectory.toFile().mkdirs();
+    subdirectoryPattern = configuration.getSubdirectoryPattern();
+    whitelist = configuration.getWhitelist();
+    filenameFormat = fileNameProperties.getFormat();
+    randomizerLimit = fileNameProperties.getRandomizerLimit();
+    formatter = new SimpleDateFormat(timestampProperties.getFormat());
+    formatter.setTimeZone(TimeZone.getTimeZone(timestampProperties.getTimeZone()));
 
   @Override
   public Tag create(User user, UUID canvasKey, MultipartFile bitmap) {
@@ -50,5 +106,74 @@ public class TagService implements AbstractTagService{
         .findByKey(canvasKey)
         .map((canvas) -> tagRepository.findByUserAndCanvas(user, canvas))
         .orElseThrow();
+  }
+
+  @Override
+  public String store(MultipartFile file)
+      throws StorageService.StorageException, StorageService.MediaTypeException {
+    if (!whitelist.contains(file.getContentType())) {
+      throw new StorageService.MediaTypeException(
+          String.format("Content Type %s not supported for storage.", file.getContentType()));
+    }
+    String originalFilename = file.getOriginalFilename();
+    String newFilename = String.format(
+        filenameFormat,
+        formatter.format(new Date()),
+        rng.nextInt(randomizerLimit),
+        getExtension((originalFilename != null) ? originalFilename : "")
+    );
+    String subdirectory = getSubdirectory(newFilename);
+    Path resolvedPath = uploadDirectory.resolve(subdirectory);
+    resolvedPath.toFile().mkdirs();
+    try {
+      Files.copy(file.getInputStream(), resolvedPath.resolve(newFilename));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return newFilename;
+  }
+
+  @Override
+  public Resource retrieve(String key) throws StorageService.StorageException {
+    try {
+      return new UrlResource(resolve(key).toUri());
+    } catch (MalformedURLException e) {
+      throw new StorageService.StorageException(e);
+    }
+  }
+
+  @Override
+  public boolean delete(String key)
+      throws StorageService.StorageException, UnsupportedOperationException, SecurityException {
+    return false;
+  }
+  @NonNull
+  private String getExtension(@NonNull String filename) {
+    int position = filename.lastIndexOf('.');
+    return (position >= 0)
+        ? filename.substring(position + 1)
+        : "";
+
+
+  }
+
+  @NonNull
+  private String getSubdirectory(@NonNull String filename) {
+    String path;
+    Matcher matcher = subdirectoryPattern.matcher(filename);
+    if (matcher.matches()) {
+      path = IntStream.rangeClosed(1, matcher.groupCount())
+          .mapToObj(matcher::group)
+          .collect(Collectors.joining(KEY_PATH_DELIMITER));
+    } else {
+      path = "";
+
+    }
+    return path;
+  }
+
+  @NonNull
+  private Path resolve(@NonNull String key) {
+    return uploadDirectory.resolve(getSubdirectory(key)).resolve(key);
   }
 }
