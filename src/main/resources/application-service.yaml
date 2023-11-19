@@ -17,3 +17,17 @@ server:
   error:
     include-message: always
   forward-headers-strategy: framework
+
+  file-storage:
+    application-home: true
+    directory: uploads
+    subdirectory-pattern: "^(.{4})(.{2})(.{2}).*$"
+    whitelist:
+      - image/bmp
+    filename:
+      unknown: (unknown)
+      format: "%1$s-%2$06d.%3$s"
+      randomizer-limit: 1000000
+      timestamp:
+        format: yyyyMMddHHmmssSSS
+        time-zone: UTC
