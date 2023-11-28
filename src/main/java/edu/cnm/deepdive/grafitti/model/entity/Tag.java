@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "tags")
@@ -58,32 +59,14 @@ public class Tag {
   @JsonProperty(access = Access.READ_ONLY)
   private Instant created;
 
-  @NonNull
-  @Column(updatable = false, nullable = false)
-  @JsonIgnore
-  private String storageKey;
-
-
-  @NonNull
-  @Column(nullable = false, updatable = false)
-  @JsonProperty(access = Access.READ_ONLY)
-  private String filename;
-
-  @NonNull
-  @Column(nullable = false, updatable = false)
-  @JsonProperty(access = Access.READ_ONLY)
-  private String contentType;
-  @NonNull
-  @Column(nullable = false, updatable = false)
-  @JsonProperty(access = Access.READ_ONLY)
-  private long size;
-
-
-
   public long getId() {
     return id;
   }
 
+  @NonNull
+  public UUID getKey() {
+    return key;
+  }
 
   @NonNull
   public Canvas getCanvas() {
@@ -107,48 +90,9 @@ public class Tag {
   public Instant getCreated() {
     return created;
   }
-
-  public void setCreated(@NonNull Instant created) {
-    this.created = created;
-  }
-
-  @NonNull
-  public String getStorageKey() {
-    return storageKey;
-  }
-
-  public void setStorageKey(@NonNull String storageKey) {
-    this.storageKey = storageKey;
-  }
-  
-   @NonNull
-  public String getFilename() {
-    return filename;
-  }
-
-  public void setFilename(@NonNull String filename) {
-    this.filename = filename;
-  }
-
-  @NonNull
-  public String getContentType() {
-    return contentType;
-  }
-
-  public void setContentType(@NonNull String contentType) {
-    this.contentType = contentType;
-  }
-
-  public long getSize() {
-    return size;
-  }
-
-  public void setSize(long size) {
-    this.size = size;
-    @PrePersist
+  @PrePersist
   private void generateKey(){
     key = UUID.randomUUID();
   }
 
-  
 }

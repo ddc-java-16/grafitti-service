@@ -3,12 +3,15 @@ package edu.cnm.deepdive.grafitti.controller;
 import edu.cnm.deepdive.grafitti.model.entity.Canvas;
 import edu.cnm.deepdive.grafitti.service.AbstractCanvasService;
 import edu.cnm.deepdive.grafitti.service.AbstractUserService;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,23 +35,31 @@ public class CanvasController {
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public Canvas create(@RequestBody Canvas canvas) {
-    return canvasService.create(userService.getCurrentUser(), canvas);
+
+  public ResponseEntity<Canvas> post(@RequestBody Canvas canvas) {
+    Canvas body = canvasService.save(userService.getCurrentUser(), canvas);
+    URI location = WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(getClass())
+                .get(body.getKey())
+        )
+        .toUri();
+    return ResponseEntity.created(location).body(body);
+
   }
 
-  @GetMapping(value = "/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Canvas get(@PathVariable("key") UUID canvasKey) {
-    return canvasService.get(canvasKey).orElseThrow();
+  @GetMapping(value = "/{canvasKey}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Canvas get(@PathVariable UUID canvasKey) {
+    return canvasService.get(canvasKey);
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Canvas> getAll(){
+  public List<Canvas> getAll() {
     return canvasService.getAll(userService.getCurrentUser());
   }
 
-  @DeleteMapping(value = "/{key}")
+  @DeleteMapping(value = "/{canvasKey}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void delete(@PathVariable("key") UUID canvasKey){
-     canvasService.delete(userService.getCurrentUser(), canvasKey);
+  public void delete(@PathVariable UUID canvasKey) {
+    canvasService.delete(userService.getCurrentUser(), canvasKey);
   }
 }

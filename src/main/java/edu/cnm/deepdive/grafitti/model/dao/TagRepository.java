@@ -11,8 +11,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface TagRepository extends JpaRepository<Tag, UUID> {
-  List<Tag> findByUserAndCanvas(User user, Canvas canvas);
+ List<Tag> findByUserAndCanvas(User user, Canvas canvas);
   Optional<Tag> findByKey(UUID tagKey);
-  List<Tag> findByCanvas(Canvas canvas);
+
+  List<Tag> findByCanvasOrderByCreatedAsc(Canvas canvas);
+
+  Optional<Tag> findByCanvasAndKey(Canvas canvas, UUID tagKey);
 
 }

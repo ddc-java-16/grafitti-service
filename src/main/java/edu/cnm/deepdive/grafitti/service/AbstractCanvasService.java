@@ -8,12 +8,12 @@ import java.util.UUID;
 
 public interface AbstractCanvasService {
 
- Canvas create(User user, Canvas canvas);
+  Canvas save(User user, Canvas canvas);
 
-  Optional<Canvas> get (UUID canvasKey);
+  Canvas get (UUID canvasKey);
+
+  List<Canvas> getAll (User user);
 
  void delete(User user, UUID canvasKey);
-
- List<Canvas> getAll (User user);
 
 }

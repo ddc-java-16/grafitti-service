@@ -19,23 +19,26 @@ public class CanvasService implements AbstractCanvasService{
   }
 
   @Override
-  public Canvas create(User user, Canvas canvas) {
+  public Canvas save(User user, Canvas canvas) {
     canvas.setUser(user);
-          return  repository.save(canvas);
-
-
+    return repository.save(canvas);
   }
 
   @Override
-  public Optional<Canvas> get(UUID user_key) {
+  public Canvas get(UUID canvasKey) {
     return repository
-        .findByKey(user_key);
+        .findByKey(canvasKey)
+        .orElseThrow();
   }
 
   @Override
   public void delete(User user, UUID canvasKey) {
-    repository.findByUserAndKey(user, canvasKey)
-        .ifPresent(repository::delete);
+    repository.findByKeyAndUser(canvasKey, user)
+        .map((canvas) -> {
+         repository.delete(canvas);
+          return true;
+        })
+        .orElseThrow();
   }
 
   @Override

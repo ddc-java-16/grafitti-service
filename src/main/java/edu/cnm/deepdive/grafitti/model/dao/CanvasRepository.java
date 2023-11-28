@@ -11,9 +11,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CanvasRepository extends JpaRepository<Canvas, UUID> {
 
-  Optional<Canvas> findByKey(UUID canvasKey);
+  Optional<Canvas> findByKey(UUID externalKey);
 
   List<Canvas> findAllByUser(User user);
 
-  Optional<Canvas> findByUserAndKey(User user, UUID canvasKey);
+  Optional<Canvas> findByKeyAndUser(UUID externalKey, User user);
+
+ //void delete(UUID canvas_key);
 }
