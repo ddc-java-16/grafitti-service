@@ -1,14 +1,21 @@
 package edu.cnm.deepdive.grafitti.model.dao;
 
 
+import edu.cnm.deepdive.grafitti.model.entity.Canvas;
 import edu.cnm.deepdive.grafitti.model.entity.Tag;
+import edu.cnm.deepdive.grafitti.model.entity.User;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface TagRepository extends JpaRepository<Tag, UUID> {
-  Optional<Tag> findByUserAndCanvas(UUID user_key, UUID canvas_key);
-  Optional<Tag> findByCanvas(UUID canvas_key);
+ List<Tag> findByUserAndCanvas(User user, Canvas canvas);
+  Optional<Tag> findByKey(UUID tagKey);
+
+  List<Tag> findByCanvasOrderByCreatedAsc(Canvas canvas);
+
+  Optional<Tag> findByCanvasAndKey(Canvas canvas, UUID tagKey);
 
 }

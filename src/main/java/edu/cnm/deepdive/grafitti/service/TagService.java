@@ -1,47 +1,54 @@
 package edu.cnm.deepdive.grafitti.service;
 
+import edu.cnm.deepdive.grafitti.model.dao.CanvasRepository;
 import edu.cnm.deepdive.grafitti.model.dao.TagRepository;
 import edu.cnm.deepdive.grafitti.model.entity.Canvas;
 import edu.cnm.deepdive.grafitti.model.entity.Tag;
 import edu.cnm.deepdive.grafitti.model.entity.User;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class TagService implements AbstractTagService{
+public class TagService implements AbstractTagService {
 
-  private final TagRepository repository;
-  public TagService(TagRepository repository) {
-    this.repository = repository;
+  private final TagRepository tagRepository;
+  private final CanvasRepository canvasRepository;
+
+  public TagService(TagRepository tagRepository, CanvasRepository canvasRepository) {
+    this.tagRepository = tagRepository;
+    this.canvasRepository = canvasRepository;
   }
 
   @Override
-  public Tag create(UUID canvas_key, MultipartFile bitmap) {
-    return  repository
-        .findById(canvas_key)
-        .map((c) -> {
-          // Store bitmap using StorageService, and get the storageKey returned it
-          Tag tag = new Tag();
-          tag.setCreated(Instant.now());
-          //tag.setBitmap(bitmap); // FIXME: 11/15/23
-          return repository.save(tag);
+  public Tag save(User user, UUID canvasKey, Tag tag) {
+    return canvasRepository
+        .findByKey(canvasKey)
+        .map((canvas) -> {
+          tag.setCanvas(canvas);
+          tag.setUser(user);
+          return tagRepository.save(tag);
         })
         .orElseThrow();
   }
 
 
   @Override
-  public Optional<Tag> get(UUID canvas_key) {
-    return repository
-        .findByCanvas(canvas_key);
+  public Tag get(UUID canvasKey, UUID tagKey) {
+    return canvasRepository
+        .findByKey(canvasKey)
+        .flatMap((canvas) -> tagRepository.findByCanvasAndKey(canvas, tagKey))
+        .orElseThrow();
   }
 
   @Override
-  public Optional<Tag> get(UUID user_id, UUID canvas_key) {
-    return repository
-        .findByUserAndCanvas(user_id, canvas_key);
+  public List<Tag> get(UUID canvasKey) {
+    return canvasRepository
+        .findByKey(canvasKey)
+        .map(Canvas::getTags)
+        .orElseThrow();
   }
 }

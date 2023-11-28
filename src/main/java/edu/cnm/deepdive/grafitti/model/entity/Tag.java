@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -58,14 +59,14 @@ public class Tag {
   @JsonProperty(access = Access.READ_ONLY)
   private Instant created;
 
-  @NonNull
-  @Column(updatable = false, nullable = false)
-  private String storageKey;
-
   public long getId() {
     return id;
   }
 
+  @NonNull
+  public UUID getKey() {
+    return key;
+  }
 
   @NonNull
   public Canvas getCanvas() {
@@ -89,17 +90,9 @@ public class Tag {
   public Instant getCreated() {
     return created;
   }
-
-  public void setCreated(@NonNull Instant created) {
-    this.created = created;
+  @PrePersist
+  private void generateKey(){
+    key = UUID.randomUUID();
   }
 
-  @NonNull
-  public String getStorageKey() {
-    return storageKey;
-  }
-
-  public void setStorageKey(@NonNull String storageKey) {
-    this.storageKey = storageKey;
-  }
 }

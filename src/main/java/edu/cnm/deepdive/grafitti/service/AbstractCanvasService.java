@@ -1,18 +1,19 @@
 package edu.cnm.deepdive.grafitti.service;
 
 import edu.cnm.deepdive.grafitti.model.entity.Canvas;
+import edu.cnm.deepdive.grafitti.model.entity.User;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface AbstractCanvasService {
 
-  Optional<Canvas> create(UUID user_key, String canvasName);
+  Canvas save(User user, Canvas canvas);
 
-  Optional<Canvas> get (UUID user_key);
+  Canvas get (UUID canvasKey);
 
-  List<Canvas> getAll (UUID user_key);
+  List<Canvas> getAll (User user);
 
-  void delete(UUID canvas_key);
+ void delete(User user, UUID canvasKey);
 
 }
