@@ -1,8 +1,10 @@
 package edu.cnm.deepdive.grafitti.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.cnm.deepdive.grafitti.model.entity.Canvas;
 import edu.cnm.deepdive.grafitti.service.AbstractCanvasService;
 import edu.cnm.deepdive.grafitti.service.AbstractUserService;
+import edu.cnm.deepdive.grafitti.view.CanvasViews;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +55,7 @@ public class CanvasController {
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @JsonView(CanvasViews.Summary.class)
   public List<Canvas> getAll() {
     return canvasService.getAll(userService.getCurrentUser());
   }
