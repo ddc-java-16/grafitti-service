@@ -38,28 +38,19 @@ public class Point {
   @Column(nullable = false, updatable = false)
   private int y;
 
-  @NonNull
-  @CreationTimestamp
-  @Temporal(TemporalType.TIMESTAMP)
-  @Column(nullable = false, updatable = false)
-  @JsonProperty(access = Access.READ_ONLY)
-  private Instant created;
 
   @NonNull
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "canvas_id", nullable = false, updatable = false)
+  @JoinColumn(name = "tag_id", nullable = false, updatable = false)
   @JsonIgnore
-  private Canvas canvas;
+  private Tag tag;
 
   @NonNull
   public Long getId() {
     return id;
   }
 
-  @NonNull
-  public Instant getCreated() {
-    return created;
-  }
+
 
   public int getX() {
     return x;
@@ -78,11 +69,11 @@ public class Point {
   }
 
   @NonNull
-  public Canvas getCanvas() {
-    return canvas;
+  public Tag getTag() {
+    return tag;
   }
 
-  public void setCanvas(@NonNull Canvas canvas) {
-    this.canvas = canvas;
+  public void setTag(@NonNull Tag tag) {
+    this.tag = tag;
   }
 }

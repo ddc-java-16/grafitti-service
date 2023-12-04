@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,15 +13,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.Instant;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
-import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "tags")
@@ -59,6 +63,23 @@ public class Tag {
   @JsonProperty(access = Access.READ_ONLY)
   private Instant created;
 
+  @NonNull
+  @OneToMany(mappedBy = "tag", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OrderBy("id ASC")
+  private final List<Point> points = new LinkedList<>();
+
+  @NonNull
+  @Column(nullable = false, updatable = false)
+  private int color;
+
+  @NonNull
+  @Column(nullable = false, updatable = false)
+  private int stroke;
+
+  @NonNull
+  @Column(nullable = false, updatable = false)
+  private int brushStyle;
+
   public long getId() {
     return id;
   }
@@ -86,13 +107,44 @@ public class Tag {
     this.user = user;
   }
 
+  public void setColor(int color) {
+    this.color = color;
+  }
+
+  public int getColor() {
+    return color;
+  }
+
+  public int getStroke() {
+    return stroke;
+  }
+
+  public void setStroke(int stroke) {
+    this.stroke = stroke;
+  }
+
+  public int getBrushStyle() {
+    return brushStyle;
+  }
+
+  public void setBrushStyle(int brushStyle) {
+    this.brushStyle = brushStyle;
+  }
+
   @NonNull
   public Instant getCreated() {
     return created;
   }
+
+  @NonNull
+  public List<Point> getPoints() {
+    return points;
+  }
+
   @PrePersist
-  private void generateKey(){
+  private void generateKey() {
     key = UUID.randomUUID();
   }
+
 
 }

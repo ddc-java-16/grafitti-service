@@ -30,6 +30,9 @@ public class TagService implements AbstractTagService {
         .map((canvas) -> {
           tag.setCanvas(canvas);
           tag.setUser(user);
+          tag
+              .getPoints()
+              .forEach((p) -> p.setTag(tag));
           return tagRepository.save(tag);
         })
         .orElseThrow();

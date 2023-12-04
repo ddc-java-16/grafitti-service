@@ -3,6 +3,8 @@ package edu.cnm.deepdive.grafitti.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonView;
+import edu.cnm.deepdive.grafitti.view.CanvasViews;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,16 +27,18 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
 
 @Entity
+@JsonView(CanvasViews.Summary.class)
 public class Canvas {
 
   @Id
   @GeneratedValue
   @Column(name = "canvas_id", updatable = false)
+  @JsonIgnore
   private int id;
 
   @NonNull
   @Column(name = "external_key", updatable = false, nullable = false, unique = true, columnDefinition = "UUID")
-  @JsonProperty(namespace = "id", access = Access.READ_ONLY)
+  @JsonProperty(value = "id", access = Access.READ_ONLY)
   private UUID key;
   @NonNull
   @Column(nullable = false, updatable = false, unique = true)
@@ -57,13 +61,9 @@ public class Canvas {
   @OneToMany(mappedBy = "canvas", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("created ASC")
   @JsonProperty(access = Access.READ_ONLY)
+  @JsonView(CanvasViews.Detailed.class)
   private final List<Tag> tags = new LinkedList<>();
 
-  @NonNull
-  @OneToMany(mappedBy = "canvas", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  @OrderBy("created ASC")
-  @JsonProperty(access = Access.READ_ONLY)
-  private final List<Point> points = new LinkedList<>();
 
   public int getId() {
     return id;
@@ -102,10 +102,6 @@ public class Canvas {
     return tags;
   }
 
-  @NonNull
-  public List<Point> getPoints() {
-    return points;
-  }
 
   @PrePersist
   private void generateKey() {
