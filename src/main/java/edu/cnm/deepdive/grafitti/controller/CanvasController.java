@@ -54,12 +54,18 @@ public class CanvasController {
     return canvasService.get(canvasKey);
   }
 
+//  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE )
+//  @JsonView(CanvasViews.Summary.class)
+//  public List<Canvas> getAll() {
+//    return canvasService.getAll(userService.getCurrentUser());
+//  }
+
+
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @JsonView(CanvasViews.Summary.class)
-  public List<Canvas> getAll() {
-    return canvasService.getAll(userService.getCurrentUser());
+  public List<Canvas> getItAll() {
+    return canvasService.getItAll();
   }
-
   @DeleteMapping(value = "/{canvasKey}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(@PathVariable UUID canvasKey) {
