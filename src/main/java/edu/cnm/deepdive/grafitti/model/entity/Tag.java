@@ -78,7 +78,7 @@ public class Tag {
 
   @NonNull
   @Column(nullable = false, updatable = false)
-  private int brushStyle;
+  private int style;
 
   public long getId() {
     return id;
@@ -123,12 +123,12 @@ public class Tag {
     this.stroke = stroke;
   }
 
-  public int getBrushStyle() {
-    return brushStyle;
+  public int getStyle() {
+    return style;
   }
 
-  public void setBrushStyle(int brushStyle) {
-    this.brushStyle = brushStyle;
+  public void setStyle(int brushStyle) {
+    this.style = brushStyle;
   }
 
   @NonNull
