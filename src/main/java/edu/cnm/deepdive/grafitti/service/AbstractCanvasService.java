@@ -14,6 +14,8 @@ public interface AbstractCanvasService {
 
   List<Canvas> getAll (User user);
 
+  List<Canvas> getItAll ();
+
  void delete(User user, UUID canvasKey);
 
 }

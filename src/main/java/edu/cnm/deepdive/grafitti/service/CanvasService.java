@@ -9,7 +9,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CanvasService implements AbstractCanvasService{
+public class
+CanvasService implements AbstractCanvasService{
 
 
   private final CanvasRepository repository;
@@ -44,5 +45,10 @@ public class CanvasService implements AbstractCanvasService{
   @Override
   public List<Canvas> getAll(User user){
     return repository.findAllByUser(user);
+  }
+
+  @Override
+  public List<Canvas> getItAll() {
+    return repository.findAll();
   }
 }
